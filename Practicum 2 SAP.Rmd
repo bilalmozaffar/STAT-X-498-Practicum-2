@@ -1,0 +1,22 @@
+---
+title: "Practicum 2 SAP"
+author: "Bilal Mozaffar"
+date: "3/7/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+dat <- read.csv('prac_data.csv', header = TRUE)
+price <- read.csv('price.csv', header = TRUE)
+dat <- cbind(dat, price)
+```
+
+
+
+
+
+
