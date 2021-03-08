@@ -15,8 +15,63 @@ price <- read.csv('price.csv', header = TRUE)
 dat <- cbind(dat, price)
 ```
 
+```{r}
 
+##make blank spaces NA
+dat[dat==c(""," ")]<-NA
+dat$marital[dat$marital==""]<-NA
+dat$marital <- as.factor(dat$marital)
+dat$marital<-droplevels(dat$marital)
+summary(dat$marital)
+class(dat$marital)
 
+dat$education <- as.factor(dat$education)
+dat$education[dat$education==""]<-NA
+dat$education<-droplevels(dat$education)
+summary(dat$education)
+
+dat$job <-as.factor(dat$job)
+dat$job[dat$job==""]<-NA
+dat$job<-droplevels(dat$job)
+levels(dat$job)= c("admin","unknown","unemployed","management","housemaid","entrepreneur","student","blue-collar","self-employed","retired","technician","services")
+summary(dat$job)
+
+dat$y <- as.factor(dat$y)
+levels(dat$y)= c("no","yes")
+summary(dat$y)
+
+dat$default <- as.factor(dat$default)
+dat$default[dat$default==""]<-NA
+dat$default<-droplevels(dat$default)
+levels(dat$default)
+
+dat$housing <- as.factor(dat$housing)
+dat$housing[dat$housing==""]<-NA
+dat$housing<-droplevels(dat$housing)
+
+dat$loan <- as.factor(dat$loan)
+dat$loan[dat$loan==""]<-NA
+dat$loan<-droplevels(dat$loan)
+
+dat$price <- as.numeric(dat$price)
+
+dat$poutcome <- as.factor(dat$poutcome)
+dat$poutcome[dat$poutcome==""]<-NA
+dat$poutcome<-droplevels(dat$poutcome)
+
+dat$campaign <- as.numeric(dat$campaign)
+dat$pdays <- as.numeric(dat$pdays)
+dat$previous <- as.numeric(dat$previous)
+dat$duration <- as.numeric(dat$duration)
+
+dat$contact <- as.factor(dat$contact)
+dat$contact[dat$contact==""]<-NA
+dat$contact<-droplevels(dat$contact)
+levels(dat$contact)= c("cellular", "telephone", "unknown")
+
+dat$month <- as.factor(dat$month)
+
+```
 
 
 
