@@ -73,5 +73,36 @@ dat$month <- as.factor(dat$month)
 
 ```
 
+```{r}
+Practicum = aggr(dat_mini, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
 
+mod_1 <- glm(y ~ poutcome+age+job+education+housing+price+campaign+default+balance+contact+day+month+pdays+previous, family = "binomial",na.omit(dat))#when added marital there was an issue with perfect prediction. Still trying to figure out what is going on
+
+
+mod_0 <- glm(y ~ 1 , family=binomial, na.omit(dat))
+
+mod.1 = step(mod_0,
+             scope=list(lower=mod_0, upper=mod_1),
+             direction = "both", trace = T)
+library(faraway)
+sumary(mod.1)
+anova(mod.1)
+
+## Model selection for a more reduced model
+mod_r1 <- glm(y ~ poutcome+age+job+marital+education+housing+price+campaign, family = "binomial",na.omit(dat_mini))
+
+mod_r0 <- glm(y ~ 1 , family=binomial, na.omit(dat_mini))
+
+mod.r1 = step(mod_r0,
+             scope=list(lower=mod_r0, upper=mod_r1),
+             direction = "both", trace = F)
+mod.1$anova
+sumary(mod.r1)
+Anova(mod.r1)
+Anova(mod_r1)
+
+
+
+
+````
 
