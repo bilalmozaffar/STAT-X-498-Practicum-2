@@ -5,6 +5,13 @@ date: "3/15/2021"
 output: html_document
 ---
 
+---
+title: "Practicum 2 Technical Report"
+author: "Joseph Spatz"
+date: "3/15/2021"
+output: html_document
+---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 rm(list=ls())
@@ -138,8 +145,15 @@ dat_mini_1_impute <- na.omit(dat_mini_1)
 save(dat_mini_1_impute, file = "dat_imp_final.RData")
 
 
-
 ```
+###Exploratory Data Analysis
+
+```{r}
+
+
+
+
+
 ###Exploratory Data Analysis
 
 ```{r}
