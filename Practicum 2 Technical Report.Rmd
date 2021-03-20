@@ -7,80 +7,96 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(ggplot2)
+rm(list=ls())
 library(dplyr)
-library(tidyverse)
-library(VIM)
+library(ggplot2)
+library(car)
+library(MASS)
+library(mice)
+library(tidyr)
 ```
 
 ```{r}
-dat <- read.csv('prac_data.csv', header = TRUE)
-price <- read.csv('price.csv', header = TRUE)
-dat <- cbind(dat, price)
+library(haven)
+dat <- read_dta("dat_p2.dta")
+View(dat)
 ```
 
 ```{r}
+##Data Processing
+summary(dat)
 
-##make blank spaces NA
-dat[dat==c(""," ")]<-NA
-dat$marital[dat$marital==""]<-NA
-dat$marital <- as.factor(dat$marital)
-dat$marital<-droplevels(dat$marital)
+dat$marital <- factor(dat$marital,levels = c(0,1), labels = c("Not Married", "Married"))
+
 summary(dat$marital)
 class(dat$marital)
 
-dat$education <- as.factor(dat$education)
-dat$education[dat$education==""]<-NA
-dat$education<-droplevels(dat$education)
+dat$education <- factor(dat$education,levels = c(1,2,3), labels = c("Less than College", "College and More", "Uknown"))
 summary(dat$education)
 
-dat$job <-as.factor(dat$job)
-dat$job[dat$job==""]<-NA
-dat$job<-droplevels(dat$job)
-levels(dat$job)= c("admin","unknown","unemployed","management","housemaid","entrepreneur","student","blue-collar","self-employed","retired","technician","services")
-summary(dat$job)
+dat$job <- factor(dat$job,levels = c(1,2,3,4,5,6,7), labels = c("White Collar", "Blue Collar", "Unemployed", "Entrepreneur/Self-Employed", "Student", "Retired", "Uknown"))
 
-dat$y <- as.factor(dat$y)
-levels(dat$y)= c("no","yes")
+
+dat$y <- factor(dat$y,levels = c(0,1), labels = c("No", "Yes"))
+
 summary(dat$y)
 
-dat$default <- as.factor(dat$default)
-dat$default[dat$default==""]<-NA
-dat$default<-droplevels(dat$default)
-levels(dat$default)
+dat$default<- factor(dat$default,levels = c(0,1), labels = c("No", "Yes"))
 
-dat$housing <- as.factor(dat$housing)
-dat$housing[dat$housing==""]<-NA
-dat$housing<-droplevels(dat$housing)
 
-dat$loan <- as.factor(dat$loan)
-dat$loan[dat$loan==""]<-NA
-dat$loan<-droplevels(dat$loan)
+dat$housing <- factor(dat$housing,levels = c(0,1), labels = c("No", "Yes"))
+
+
+dat$loan <- factor(dat$loan,levels = c(0,1), labels = c("No", "Yes"))
+
 
 dat$price <- as.numeric(dat$price)
 
-dat$poutcome <- as.factor(dat$poutcome)
-dat$poutcome[dat$poutcome==""]<-NA
-dat$poutcome<-droplevels(dat$poutcome)
+dat$poutcome <- factor(dat$poutcome,levels = c(1,2,3,4), labels = c("Failure", "Other", "Success", "Unknown"))
+
 
 dat$campaign <- as.numeric(dat$campaign)
 dat$pdays <- as.numeric(dat$pdays)
 dat$previous <- as.numeric(dat$previous)
 dat$duration <- as.numeric(dat$duration)
+dat$balance <- as.numeric(dat$balance)
+dat$age <- as.numeric(dat$age)
 
-dat$contact <- as.factor(dat$contact)
-dat$contact[dat$contact==""]<-NA
-dat$contact<-droplevels(dat$contact)
-levels(dat$contact)= c("cellular", "telephone", "unknown")
+dat$contact <- factor(dat$contact,levels = c(1,2,3), labels = c("Cellular","Telephone","Unknown"))
 
-dat$month <- as.factor(dat$month)
+
+dat$month <- factor(dat$month,levels = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"))
+
+dat$month_season <- factor(dat$month_season, levels = c(1,2,3,4), labels = c("Spring", "Summer", "Fall", "Winter"))
+
 
 ```
 
 ```{r}
+#Missing Data Patterns 
+md.pattern(dat_mini,plot = T, rotate.names = TRUE)
+m + plot.window(xlim=c(-1, ncol(m) + 1), ylim=c(-1, nrow(m) + length_of_longest_colname), asp=1)
+library(VIM)
+missing = aggr(dat_mini, numbers = TRUE, prop = c(TRUE, FALSE))
+
+#include in  larger data 
 Practicum = aggr(dat_mini, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
 
-mod_1 <- glm(y ~ poutcome+age+job+education+housing+price+campaign+default+balance+contact+day+month+pdays+previous, family = "binomial",na.omit(dat))#when added marital there was an issue with perfect prediction. Still trying to figure out what is going on
+aggr(df, prop = T, numbers = F, combined = F,
+ labels = names(df), cex.axis = .9, oma = c(10,5,5,3))
+
+boxMiss(dat_mini)
+```
+
+```{r}
+#More Missing Data Patterns
+Practicum = aggr(dat_mini, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
+
+```
+
+```{r}
+
+mod_1 <- glm(y ~ poutcome+age+job+education+housing+price+campaign+default+balance+contact+day+month+pdays+previous, family = "binomial",na.omit(dat))
 
 
 mod_0 <- glm(y ~ 1 , family=binomial, na.omit(dat))
@@ -92,20 +108,42 @@ library(faraway)
 sumary(mod.1)
 anova(mod.1)
 
-## Model selection for a more reduced model
-mod_r1 <- glm(y ~ poutcome+age+job+marital+education+housing+price+campaign, family = "binomial",na.omit(dat_mini))
 
-mod_r0 <- glm(y ~ 1 , family=binomial, na.omit(dat_mini))
+```
 
-mod.r1 = step(mod_r0,
-             scope=list(lower=mod_r0, upper=mod_r1),
-             direction = "both", trace = F)
-mod.1$anova
-sumary(mod.r1)
-Anova(mod.r1)
-Anova(mod_r1)
+#Distributions of Variables
+```{r}
+
+###Missing Data
+
+dat_mini_1 <- dplyr::select(dat,y,price,contact,month,education,balance,job,housing,default,age,campaign,poutcome)
 
 
+library(mice)
+md.pattern(dat_mini_1, rotate.names = TRUE)
+
+dat_mini_1$na_count <- apply(dat_mini_1, 1, function(x) sum(is.na(x)))
+dat_mini_1 %>% count(na_count)
+
+dat_mini_1 <- 
+  dat_mini_1 %>% 
+  filter(na_count <= 1)
+
+md.pattern(dat_mini_1, rotate.names = TRUE)
 
 
-````
+dat_mini_1[sapply(dat_mini_1, is.numeric)] <- lapply(dat_mini_1[sapply(dat_mini_1, is.numeric)], function(x) ifelse(is.na(x), mean(x, na.rm = TRUE), x))
+
+dat_mini_1_impute <- na.omit(dat_mini_1)
+save(dat_mini_1_impute, file = "dat_imp_final.RData")
+
+
+
+```
+###Exploratory Data Analysis
+
+```{r}
+
+
+
+
