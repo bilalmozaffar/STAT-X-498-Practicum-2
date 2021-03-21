@@ -623,6 +623,19 @@ ggplot(dat_mini_1_impute, aes(x = month_season,  group=y)) +
     ylab("Percentage of Individuals Willing to Buy Product")+
     ggtitle("Figure 10: The Proportion of Willingness to Buy the Product by the Month/Season of Contact")
     ggsave("month_rel_1.jpeg", width = 10, height = 7, dpi = 300)
+    
+  ggplot(dat_mini_1_impute, aes(x = month,  group=y)) + 
+    geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+    geom_text(aes( label = scales::percent(..prop..),
+                   y= ..prop.. ), stat= "count", vjust = -.5) +
+    labs(y = "Percent", fill=" Month") +
+    facet_grid(~y) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    scale_y_continuous(labels = scales::percent)+
+    xlab("Month of Contact") + 
+    ylab("Percentage of Individuals Willing to Buy Product")+
+    ggtitle("Figure 11: The Proportion of Willingness to Buy the Product by the Month of Contact")
+    ggsave("month_rel_1b.jpeg", width = 12, height = 7, dpi = 300)
 ```
 
 Upon analysis of the seasons of interactions with respondents, it appears that those who responded favorably to the USB toaster are more likely to have been contacted during Fal and Winter months. However, the differences are not strikingly large, suggesting that season (and subsequently month) may not be useful in predicting the marketing campaign's success.
