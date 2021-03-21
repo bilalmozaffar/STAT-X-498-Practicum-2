@@ -72,27 +72,8 @@ dat$month_season <- factor(dat$month_season, levels = c(1,2,3,4), labels = c("Sp
 
 ```
 
-```{r}
-#Missing Data Patterns 
-md.pattern(dat_mini,plot = T, rotate.names = TRUE)
-m + plot.window(xlim=c(-1, ncol(m) + 1), ylim=c(-1, nrow(m) + length_of_longest_colname), asp=1)
-library(VIM)
-missing = aggr(dat_mini, numbers = TRUE, prop = c(TRUE, FALSE))
 
-#include in  larger data 
-Practicum = aggr(dat_mini, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
 
-aggr(df, prop = T, numbers = F, combined = F,
- labels = names(df), cex.axis = .9, oma = c(10,5,5,3))
-
-boxMiss(dat_mini)
-```
-
-```{r}
-#More Missing Data Patterns
-Practicum = aggr(dat_mini, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
-
-```
 
 ```{r}
 
@@ -118,7 +99,24 @@ anova(mod.1)
 
 dat_mini_1 <- dplyr::select(dat,y,price,contact,month,education,balance,job,housing,default,age,campaign,poutcome)
 
+#Missing Data Patterns 
+md.pattern(dat_mini_1,plot = T, rotate.names = TRUE)
 
+
+#More Missing Data Patterns
+library(VIM)
+Practicum = aggr(dat_mini_1, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini_1), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
+
+
+#include in  larger data 
+Practicum = aggr(dat_mini_1, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
+
+
+boxMiss(dat_mini_1)
+
+```
+
+```{r}
 library(mice)
 md.pattern(dat_mini_1, rotate.names = TRUE)
 
@@ -143,6 +141,6 @@ save(dat_mini_1_impute, file = "dat_imp_final.RData")
 
 ```{r}
 ###Exploratory Data Analysis
-load(dat_imp_fina.Rdata)
+load(dat_imp_final.Rdata)
 
 ```
