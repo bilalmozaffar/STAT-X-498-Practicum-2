@@ -97,7 +97,7 @@ anova(mod.1)
 
 ###Missing Data
 
-dat_mini_1 <- dplyr::select(dat,y,price,contact,month,education,balance,job,housing,default,age,campaign,poutcome)
+dat_mini_1 <- dplyr::select(dat,y,price,contact,month_season,month,education,balance,job,housing,default,age,campaign,poutcome)
 
 #Missing Data Patterns 
 md.pattern(dat_mini_1,plot = T, rotate.names = TRUE)
@@ -106,6 +106,7 @@ md.pattern(dat_mini_1,plot = T, rotate.names = TRUE)
 #More Missing Data Patterns
 library(VIM)
 Practicum = aggr(dat_mini_1, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini_1), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
+
 
 
 ```
@@ -117,6 +118,7 @@ md.pattern(dat_mini_1, rotate.names = TRUE)
 
 dat_mini_1$na_count <- apply(dat_mini_1, 1, function(x) sum(is.na(x)))
 dat_mini_1 %>% count(na_count)
+summary(dat_mini_1$na_count)
 
 dat_mini_1 <- 
   dat_mini_1 %>% 
@@ -125,9 +127,13 @@ dat_mini_1 <-
 md.pattern(dat_mini_1, rotate.names = TRUE)
 
 
-dat_mini_1[sapply(dat_mini_1, is.numeric)] <- lapply(dat_mini_1[sapply(dat_mini_1, is.numeric)], function(x) ifelse(is.na(x), mean(x, na.rm = TRUE), x))
+dat_mini_1[sapply(dat_mini_1, is.numeric)] <- lapply(dat_mini_1[sapply(dat_mini_1, is.numeric)], function(x) ifelse(is.na(x), median(x, na.rm = TRUE), x))
 
 dat_mini_1_impute <- na.omit(dat_mini_1)
+
+##After imputation
+library(VIM)
+Practicum = aggr(dat_mini_1, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini_1_impute), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
 
 
 ```
@@ -262,6 +268,13 @@ We first look at age and its potential influence on response. From the box plot 
   labs(title = 'Plot of Price by Response', x = 'Response', y = 'Price') +
   theme_classic()
 )
+
+ggplot(dat_mini_1_impute, aes(x = price, y = y)) +
+geom_jitter(height = 0.1, width = 0.5) + 
+  xlab("Proposed Price for Product") + 
+  ylab("Individuals Willing to Buy Product") +
+  ggtitle("Figure #: Relationship Between Price and Willingness to Purchase Product")
+  ggsave("price_rel_1.jpeg", width = 22, height = 7, dpi = 300)
 ```
 
 We now look at survey respondents' predictions of the USB toaster's price. It turns out that the median suggested price for people who responded favorably toward the product is around $25 higher than that for people who did not respond favorable toward the product. This can be perplexing at first glance, because one might expect for people to respond more favorably to a product if they perceive it to be cheaper. What seems to be happening instead is that people who find the USB toaster to be particularly valuable in price may find it to be a high quality product, and thus these people would be more likely to purchase the product. It is worth noting that this metric is not included in sample 1, so the key finding noted here is further justification of the expense of sample 2.
@@ -353,6 +366,7 @@ ggplot(dat_mini_1_impute, aes(x = factor(job, labels = c("White Collar", "Blue C
     ylab("Percentage of Individuals Willing to Buy Product") 
     
 ggsave("job_rel_1.jpeg", width = 22, height = 7, dpi = 300)
+
   
 ```
 
@@ -413,3 +427,28 @@ The contact variable tracks respondents' primary phone. As seen in the bar chart
 Upon analysis of the seasons of interactions with respondents, it appears that those who responded favorably to the USB toaster are more likely to have been contacted during Fal and Winter months. However, the differences are not strikingly large, suggesting that season (and subsequently month) may not be useful in predicting the marketing campaign's success.
 
 # Maybe write up a summary of sample 2 findings here? Or maybe we should save the for the conclusion.
+
+
+```{r}
+###Models##
+pre_imp <- glm(y ~ price+contact+month_season+education+balance+job+housing+default+age+campaign+poutcome,family = "binomial",na.omit(dat))
+
+post_imp <- glm(y ~ price+contact+month_season+education+balance+job+housing+default+age+campaign+poutcome,family = "binomial",dat_mini_1_impute)
+library(faraway)
+sumary(pre_imp)
+sumary(post_imp)
+library(dispmod)
+
+sigma2 <- sum(residuals(post_imp,type="pearson")^2)/(36131-31)
+sigma2
+
+summary(post_imp,disersion = sigma2)
+pre.disp <- glm.binomial.disp(post_imp)
+
+halfnorm(residuals(post_imp))
+halfnorm(cooks.distance(post_imp))
+
+plot(predict(post_imp),residuals(post_imp,type="pearson"),
+xlab="Linear Predictor", ylab="Pearson Residuals")
+
+```
