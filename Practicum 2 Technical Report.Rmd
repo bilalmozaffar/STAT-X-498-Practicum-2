@@ -14,6 +14,8 @@ library(car)
 library(MASS)
 library(mice)
 library(tidyr)
+library(VIM)
+
 ```
 
 ```{r}
@@ -34,7 +36,7 @@ class(dat$marital)
 dat$education <- factor(dat$education,levels = c(1,2,3), labels = c("Less than College", "College and More", "Uknown"))
 summary(dat$education)
 
-dat$job <- factor(dat$job,levels = c(1,2,3,4,5,6,7), labels = c("White Collar", "Blue Collar", "Unemployed", "Entrepreneur/Self-Employed", "Student", "Retired", "Uknown"))
+dat$job <- factor(dat$job,levels = c(1,2,3,4,5,6,7), labels = c("White Collar", "Blue Collar", "Unemployed", "Entrepreneur", "Student", "Retired", "Uknown"))
 
 
 dat$y <- factor(dat$y,levels = c(0,1), labels = c("No", "Yes"))
@@ -109,6 +111,7 @@ Practicum = aggr(dat_mini_1, numbers=TRUE, sortVars=TRUE,combined = F, labels=na
 ```
 
 ```{r}
+##Imputation
 library(mice)
 md.pattern(dat_mini_1, rotate.names = TRUE)
 
@@ -125,7 +128,6 @@ md.pattern(dat_mini_1, rotate.names = TRUE)
 dat_mini_1[sapply(dat_mini_1, is.numeric)] <- lapply(dat_mini_1[sapply(dat_mini_1, is.numeric)], function(x) ifelse(is.na(x), mean(x, na.rm = TRUE), x))
 
 dat_mini_1_impute <- na.omit(dat_mini_1)
-save(dat_mini_1_impute, file = "dat_imp_final.RData")
 
 
 ```
@@ -339,6 +341,19 @@ barplot(t(job_y),
         legend.text = TRUE,
         beside = TRUE)
 
+ggplot(dat_mini_1_impute, aes(x = factor(job, labels = c("White Collar", "Blue Collar", "Unemployed", "Entrepreneur", "Student", "Retired", "Uknown")),  group=y)) + 
+    geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+    geom_text(aes( label = scales::percent(..prop..),
+                   y= ..prop.. ), stat= "count", vjust = -.5) +
+    labs(y = "Percent", fill="Job types") +
+    facet_grid(~y) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    scale_y_continuous(labels = scales::percent)+
+    xlab("Job Type") + 
+    ylab("Percentage of Individuals Willing to Buy Product") 
+    
+ggsave("job_rel_1.jpeg", width = 22, height = 7, dpi = 300)
+  
 ```
 
 Like in sample 1, sample 2 contains valuable information on job type. Although sample 1 suggested that white collar workers may be more likely to purchase the USB toaster, our larger sample 2 suggests that there may be no significant difference. A category that was not included in sample 1 was entrepreneur/self-employed. This category is included in sample 2, and as seen in the stacked bar chart above, people who responded "yes" are around twice as likely to be entrepreneurs/self-employed than people who responeded "no." The client may find success in focusing on self-employed people for this marketing campaign.
