@@ -76,8 +76,8 @@ dat$month_season <- factor(dat$month_season, levels = c(1,2,3,4), labels = c("Sp
 
 
 ```{r}
-
-mod_1 <- glm(y ~ poutcome+age+job+education+housing+price+campaign+default+balance+contact+day+month+pdays+previous, family = "binomial",na.omit(dat))
+#Model Selection
+mod_1 <- glm(y ~ poutcome+age+job+education+housing+price+campaign+default+balance+contact+pdays+month+day+previous, family = "binomial",na.omit(dat))
 
 
 mod_0 <- glm(y ~ 1 , family=binomial, na.omit(dat))
@@ -107,12 +107,6 @@ md.pattern(dat_mini_1,plot = T, rotate.names = TRUE)
 library(VIM)
 Practicum = aggr(dat_mini_1, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini_1), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
 
-
-#include in  larger data 
-Practicum = aggr(dat_mini_1, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
-
-
-boxMiss(dat_mini_1)
 
 ```
 
