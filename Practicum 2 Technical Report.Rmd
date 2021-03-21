@@ -251,6 +251,9 @@ From early analysis of sample 1, it appears that the client should target the fo
 ## Analyzing Sample 2 and Comparing It to Sample 1
 
 ```{r}
+```
+
+```{r}
 # Boxplots for continuous numerical predictors
 
 (age.box <- ggplot(dat_mini_1_impute, aes(x = y, y = age, fill = y)) +
@@ -270,13 +273,23 @@ We first look at age and its potential influence on response. From the box plot 
 )
 
 ggplot(dat_mini_1_impute, aes(x = price, y = y ,color = cut(age, breaks = c(18, 30, 55, 95),
-    labels = c("College Age(18-25)", "Adults (30-55)", "Late life(Over 55)")))) +
+    labels = c("College Age(18-30)", "Adults (30-55)", "Late life(Over 55)")))) +
 geom_jitter(height = 0.1, width = 0.5) + 
   xlab("Proposed Price for Product") + 
   ylab("Individuals Willing to Buy Product") +
-  ggtitle("Figure #: Relationship Between Price and Willingness to Purchase Product")+
+  ggtitle("Figure 2: Relationship Between Price and Willingness to Purchase Product by Age")+
   labs(color = "Age Groups")
-  ggsave("price_rel_1_b.jpeg", width = 22, height = 7, dpi = 300)
+  ggsave("price_rel_1_b.jpeg", width = 10, height = 7, dpi = 300)
+  
+  
+  ggplot(dat_mini_1_impute, aes(x = price, y = y ,color = cut(balance, breaks = c(-8019, 0, 2000, 102127),
+    labels = c("Negative Balance", "0-$2000", "Over $2000")))) +
+geom_jitter(height = 0.1, width = 0.5) + 
+  xlab("Proposed Price for Product") + 
+  ylab("Individuals Willing to Buy Product") +
+  ggtitle("Figure 2: Relationship Between Price and Willingness to Purchase Product by Debt")+
+  labs(color = "Non-Mortgage Loan Balance")
+  ggsave("price_rel_1_c.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 We now look at survey respondents' predictions of the USB toaster's price. It turns out that the median suggested price for people who responded favorably toward the product is around $25 higher than that for people who did not respond favorable toward the product. This can be perplexing at first glance, because one might expect for people to respond more favorably to a product if they perceive it to be cheaper. What seems to be happening instead is that people who find the USB toaster to be particularly valuable in price may find it to be a high quality product, and thus these people would be more likely to purchase the product. It is worth noting that this metric is not included in sample 1, so the key finding noted here is further justification of the expense of sample 2.
@@ -287,6 +300,13 @@ We now look at survey respondents' predictions of the USB toaster's price. It tu
   labs(title = 'Plot of Campaign by Response', x = 'Response', y = 'Campaign') +
   theme_classic()
 )
+
+ggplot(dat_mini_1_impute, aes(x = campaign, y = y))+
+geom_jitter(height = 0.1, width = 0.5) + 
+  xlab("Numebr of Times Contacted During Last Campaign") + 
+  ylab("Individuals Willing to Buy Product") +
+  ggtitle("Figure 3: Relationship Between Camapign and Willingness to Purchase Product")
+  ggsave("campaign_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 
 
 ```
