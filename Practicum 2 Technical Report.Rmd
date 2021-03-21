@@ -72,7 +72,258 @@ dat$month_season <- factor(dat$month_season, levels = c(1,2,3,4), labels = c("Sp
 
 ```
 
+###Exploratory Data Analysis
 
+## Analyzing Sample 1
+
+```{r}
+# create fake data set for sample 1
+
+fake.dat <- data.frame(gender = rep(NA, 421), gender.y = rep(NA, 421),
+                       race = rep(NA, 421), race.y = rep(NA, 421),
+                       marital = rep(NA, 421), marital.y = rep(NA, 421),
+                       job = rep(NA, 421), job.y = rep(NA, 421),
+                       education = rep(NA, 421), education.y = rep(NA, 421))
+
+fake.dat$gender <- c(rep('Male', 322), rep('Female', 99))
+fake.dat$gender.y <- c(rep('Yes', 174), rep('No', 148),
+                       rep('Yes', 38), rep('No', 61))
+
+fake.dat$race <- c(rep('White', 360), rep('Non-White', 61))
+fake.dat$race.y <- c(rep('Yes', 189), rep('No', 171),
+                       rep('Yes', 23), rep('No', 38))
+
+fake.dat$marital <- c(rep('Married', 58), rep('Not Married', 363))
+fake.dat$marital.y <- c(rep('Yes', 2), rep('No', 56),
+                       rep('Yes', 210), rep('No', 153))
+
+fake.dat$job <- c(rep('White Collar', 55), rep('Blue Collar', 8), rep('Student', 276),
+                  rep('House', 62), rep('Unknown/Unemployed', 20))
+fake.dat$job.y <- c(rep('Yes', 43), rep('No', 12),
+                       rep('Yes', 6), rep('No', 2),
+                    rep('Yes', 142), rep('No', 134),
+                    rep('Yes', 2), rep('No', 60),
+                    rep('Yes', 19), rep('No', 1))
+
+fake.dat$education <- c(rep('College and More', 350), rep('Less Than College', 71))
+fake.dat$education.y <- c(rep('Yes', 197), rep('No', 153),
+                       rep('Yes', 15), rep('No', 56))
+
+# education
+# yes: 197 college and more, 15 less than college
+# no: 153 college and more, 56 less than college
+
+# job
+# yes: 43 white collar, 6 blue collar, 142 student, 2 house, 19 unemployed/unknown
+# no: 12 white collar, 2 blue collar, 134 student, 60 house, 1 unemployed/unknown
+
+# marital
+# yes: 2 m, 210 nm
+# no: 56 m, 153 nm
+
+# race
+# yes: 189 w, 23 nw
+# no: 171 w, 38 nw
+
+# gender
+# yes: 174 m, 38 w
+# no: 148 m, 61 w
+```
+
+In sample 1, the mean age of people who responded favorably toward the product is 25.5, while the mean age of people who did not respond favorable is 37.5. This suggests that younger age drives success of the product in sample 1. (We need to compare this to the sample 2 boxplot, which actually suggests that age is *not* that important in determining success.)
+
+```{r}
+ggplot(fake.dat, aes(x = gender.y, fill = gender)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    labs(title = 'Sample 1 Plot of Gender by Response', x = 'Response', y = 'Proportion') +
+    theme_classic()
+```
+
+In sample 1, 76% of respondents were male (around 322 of 421). Of the people who responded favorably toward the product, 82% were male, while only 71% of people who responded negatively toward the product were male. This suggests 
+that males are slightly more likely to favor the product than females, because males are slightly overrepresented in the "yes" response category and slightly underrepresented in the "no" response category.
+
+```{r}
+ggplot(fake.dat, aes(x = race.y, fill = race)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    labs(title = 'Sample 1 Plot of Race by Response', x = 'Response', y = 'Proportion') +
+    theme_classic()
+```
+
+Of all the sample 1 respondents, 86% were white (around 360 of 421). Of the people who responded favorably toward the product, 89% were white, and of those who did not respond favorably, 82% were white. White people are slightly overrepresented in the "yes" response category and slightly underrepresented in the "no" category, relative to their presence in the sample as a whole.
+
+```{r}
+ggplot(fake.dat, aes(x = marital.y, fill = marital)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    labs(title = 'Sample 1 Plot of Marital Status by Response', x = 'Response', y = 'Proportion') +
+    theme_classic()
+```
+
+In sample 1, only 14% of respondents were married (around 58 of 421). Of the people who responded favorably toward the product, just 1.0% were married, while 27% of the people who did not respond favorably were married. This indicates that married people are underrepresented in the "yes" response group and overrepresented in the "no" response group.
+
+```{r}
+ggplot(fake.dat, aes(x = job.y, fill = job)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    labs(title = 'Sample 1 Plot of Job Type by Response', x = 'Response', y = 'Proportion') +
+    theme_classic()
+```
+
+There are a few key findings from the job categories in sample 1. For instance, although only 13% of the respondents were white collar workers (around 55 of 421), 20% of people who responded "yes" were white collar workers, while only 5.9% of people who responded "no" were white collar workers. This suggests that white collar workers may be more likely to purchase the product than people of other job groups. The same can be said for unemployed people/unknown job status. Of all the respondents, only 4.7% were unemployed/unknown (around 20 of 421), yet 9.0% of people who responded "yes" were unemployed/unknown, and only 0.3% of people who responded "no" were unemployed/unknown. Clearly, unemployed/unknown people are largely overrepresented in the "yes" group and underrepresented in the "no" group.
+
+On the contrary, people who work in houses are largely underrepresented in the "yes" group. Of all the sample 1 respondents, 15% work in houses (around 62 of 421). However, only 1% of people who responded "yes" owned a house, while a staggering 29% of people who responded "no" owned a house.
+
+```{r}
+ggplot(fake.dat, aes(x = education.y, fill = education)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    labs(title = 'Sample 1 Plot of Education Status by Response', x = 'Response', y = 'Proportion') +
+    theme_classic()
+```
+
+In regards to education status, there is one key finding from sample 1. Of all respondents, 83% had a college education or more (350 of 421). However, 93% of people who responded favorably toward the product had a college education or more, as opposed to the 83% who did not respond favorably. This suggests that having a college education or more may make one more likely to purchase the product.
+
+From early analysis of sample 1, it appears that the client should target the following groups of people in order to have an optimal campaign: younger people (people in their 20s), males, white people, non-married people, white collar workers, unemployed people, and people with college education or higher. The client should note that people who own houses appear to be very unlikely to purchase the USB toaster. This suggests that a campaign would be best if geared more toward people who rent apartments, rent houses, or live in college dormitories.
+
+## Analyzing Sample 2 and Comparing It to Sample 1
+
+```{r}
+# Boxplots for continuous numerical predictors
+
+(age.box <- ggplot(dat, aes(x = y, y = age, fill = y)) +
+  geom_boxplot() +
+  labs(title = 'Plot of Age by Response', x = 'Response', y = 'Age') +
+  theme_classic()
+)
+```
+
+We first look at age and its potential influence on response. From the box plot above, it appears that the median ages for those who responded "yes" and those who responded "no" are actually fairly close. This is an important addition to the sample 1 analysis, which relied on the mean as the measure of central tendency. Perhaps sample 1 was skewed with outliers that made it appear that younger people are more likely to purchase the USB toaster. According to our larger data set, however, age may not be as significant as once thought.
+
+```{r}
+(price.box <- ggplot(dat, aes(x = y, y = price, fill = y)) +
+  geom_boxplot() +
+  labs(title = 'Plot of Price by Response', x = 'Response', y = 'Price') +
+  theme_classic()
+)
+```
+
+We now look at survey respondents' predictions of the USB toaster's price. It turns out that the median suggested price for people who responded favorably toward the product is around $25 higher than that for people who did not respond favorable toward the product. This can be perplexing at first glance, because one might expect for people to respond more favorably to a product if they perceive it to be cheaper. What seems to be happening instead is that people who find the USB toaster to be particularly valuable in price may find it to be a high quality product, and thus these people would be more likely to purchase the product. It is worth noting that this metric is not included in sample 1, so the key finding noted here is further justification of the expense of sample 2.
+
+```{r}
+(campaign.box <- ggplot(dat, aes(x = y, y = campaign, fill = y)) +
+  geom_boxplot() +
+  labs(title = 'Plot of Campaign by Response', x = 'Response', y = 'Campaign') +
+  theme_classic()
+)
+```
+The campaign variable tracks how many contacts were performed on respondents during this particular campaign, including the most recent contact. Looking at the box plot above, it appears that there is not much of a difference between those who responded "yes" and those who responded "no." We likely will be able to leave the campaign variable out of our final analysis.
+
+```{r}
+(balance.box <- ggplot(dat, aes(x = y, y = balance, fill = y)) +
+  geom_boxplot() +
+  labs(title = 'Plot of Balance by Response', x = 'Response', y = 'Balance') +
+  theme_classic()
+)
+```
+The balance variable records respondents' non-mortgage loan balances. Although this financial variable may have been expected to have some influence on whether people would be willing to purchase the USB toaster, the box plot suggests that there is not significant difference in loan balance between those who responded favorable toward the product and those who did not.
+
+```{r}
+(pdays.box <- ggplot(dat, aes(x = y, y = pdays, fill = y)) +
+  geom_boxplot() +
+  labs(title = 'Plot of Pdays by Response', x = 'Response', y = 'Pdays') +
+  theme_classic()
+)
+```
+
+The pdays variable tracks how many days have passed since the respondent was last contacted from a previous campaign, with -1 indicated that the respondent has never previously been contacted. As seen in the box plot above, the median values for both groups of responses are around the same. Each group has several outliers on the upper end of the plot. It appears that pdays will not be a useful predictor for success of the campaign.
+
+```{r}
+(previous.box <- ggplot(dat, aes(x = y, y = previous, fill = y)) +
+  geom_boxplot() +
+  labs(title = 'Plot of Previous by Response', x = 'Response', y = 'Previous') +
+  theme_classic()
+)
+```
+
+The variable previous records how many contacts were performed on respondents prior to this particular campaign. For both people who responded favorably toward the USB toaster and those who did not, the box plots are very similar to one another. This suggests that the previous variable will not be useful in determining success of the marketing campaign.
+
+```{r}
+# Stacked bar charts for categorical predictors
+
+(poutcome.stack <- ggplot(dat, aes(x = y, fill = poutcome)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    theme_classic()
+)
+```
+
+Looking at the poutcome variable, which indicates previous marketing campaign outcomes on respondents, the only notable finding is that previous successes are highly indicative of the current marketing campaign's success. The client may be better off focusing on people who have previously suggested support for the product. This is another feature not included in sample 1 that provides justification for the pursuit of a larger sample.
+
+```{r}
+(job.stack <- ggplot(dat, aes(x = y, fill = job)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    theme_classic()
+)
+```
+
+Like in sample 1, sample 2 contains valuable information on job type. Although sample 1 suggested that white collar workers may be more likely to purchase the USB toaster, our larger sample 2 suggests that there may be no significant difference. A category that was not included in sample 1 was entrepreneur/self-employed. This category is included in sample 2, and as seen in the stacked bar chart above, people who responded "yes" are around twice as likely to be entrepreneurs/self-employed than people who responeded "no." The client may find success in focusing on self-employed people for this marketing campaign.
+
+```{r}
+(marital.stack <- ggplot(dat, aes(x = y, fill = marital)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    theme_classic()
+)
+```
+
+Sample 1 indicated that married people were almost not likely at all to purchase the USB toaster. However, the bar charts above show that sample 2 does not have immense differences between married and non-married people in regards to whether they will purchase the product. This is very useful information that certainly justifies the expenditures of sample 2, becuase we now know that the client should not solely focus on unmarried people as was once suggested.
+
+```{r}
+(education.stack <- ggplot(dat, aes(x = y, fill = education)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    theme_classic()
+)
+```
+
+In the sample 1 analysis, we saw that people who responded favorably to the USB toaster were more likely to have a college education or higher. This conclusion is corroborated by sample 2. However, the conclusion is not as resounding here as it was in sample 1.
+
+```{r}
+(housing.stack <- ggplot(dat, aes(x = y, fill = housing)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    theme_classic()
+)
+```
+
+The housing variable records whether respondents have mortgages or not. The people who responded favorably to the USB toaster are less likely to have mortgages than are those who did not respond favorably, as seen in the stacked bar charts above. Based on this information, it may be useful for the client to target people who have their homes paid off and those who rent their homes.
+
+```{r}
+(default.stack <- ggplot(dat, aes(x = y, fill = default)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    theme_classic()
+)
+```
+
+The default variable indicates whether respondents have credit in default. According to the bar plots above, there does not seem to be a significant difference in this regard between those who responded favorably to the product and those who did not. Default will likely not be a useful predictor in our final analysis.
+
+```{r}
+(contact.stack <- ggplot(dat, aes(x = y, fill = contact)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    theme_classic()
+)
+```
+
+The contact variable tracks respondents' primary phone. As seen in the bar charts above, people who responded favorably to the USB toaster are more likely to use cellular phones as their primary phones. This would follow logically to the conclusions about age made during the sample 1 analysis, as younger people are more likely to have cellular phones as their primary phones. If the client is to rely on phone calls for this campaign, it may be best to take part in phone banking focused on registered cellular phone numbers.
+
+```{r}
+(month.season.stack <- ggplot(dat, aes(x = y, fill = month_season)) +
+    geom_bar(position = 'fill', stat = 'count') +
+    theme_classic()
+)
+```
+
+Upon analysis of the seasons of interactions with respondents, it appears that those who responded favorably to the USB toaster are more likely to have been contacted during Fal and Winter months. However, the differences are not strikingly large, suggesting that season (and subsequently month) may not be useful in predicting the marketing campaign's success.
+
+# Maybe write up a summary of sample 2 findings here? Or maybe we should save the for the conclusion.
+
+```{r}
+# load(dat_imp_final.Rdata)
+
+```
 
 
 ```{r}
@@ -129,12 +380,5 @@ dat_mini_1[sapply(dat_mini_1, is.numeric)] <- lapply(dat_mini_1[sapply(dat_mini_
 dat_mini_1_impute <- na.omit(dat_mini_1)
 save(dat_mini_1_impute, file = "dat_imp_final.RData")
 
-
-```
-###Exploratory Data Analysis
-
-```{r}
-###Exploratory Data Analysis
-load(dat_imp_final.Rdata)
 
 ```
