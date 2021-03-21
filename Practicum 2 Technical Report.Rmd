@@ -19,7 +19,7 @@ library(tidyr)
 ```{r}
 library(haven)
 dat <- read_dta("dat_p2.dta")
-View(dat)
+#View(dat)
 ```
 
 ```{r}
@@ -68,6 +68,64 @@ dat$contact <- factor(dat$contact,levels = c(1,2,3), labels = c("Cellular","Tele
 dat$month <- factor(dat$month,levels = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"))
 
 dat$month_season <- factor(dat$month_season, levels = c(1,2,3,4), labels = c("Spring", "Summer", "Fall", "Winter"))
+
+
+```
+
+
+```{r}
+#Model Selection
+mod_1 <- glm(y ~ poutcome+age+job+education+housing+price+campaign+default+balance+contact+pdays+month+day+previous, family = "binomial",na.omit(dat))
+
+
+mod_0 <- glm(y ~ 1 , family=binomial, na.omit(dat))
+
+mod.1 = step(mod_0,
+             scope=list(lower=mod_0, upper=mod_1),
+             direction = "both", trace = T)
+library(faraway)
+sumary(mod.1)
+anova(mod.1)
+
+
+```
+
+#Distributions of Variables
+```{r}
+
+###Missing Data
+
+dat_mini_1 <- dplyr::select(dat,y,price,contact,month,education,balance,job,housing,default,age,campaign,poutcome)
+
+#Missing Data Patterns 
+md.pattern(dat_mini_1,plot = T, rotate.names = TRUE)
+
+
+#More Missing Data Patterns
+library(VIM)
+Practicum = aggr(dat_mini_1, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini_1), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
+
+
+```
+
+```{r}
+library(mice)
+md.pattern(dat_mini_1, rotate.names = TRUE)
+
+dat_mini_1$na_count <- apply(dat_mini_1, 1, function(x) sum(is.na(x)))
+dat_mini_1 %>% count(na_count)
+
+dat_mini_1 <- 
+  dat_mini_1 %>% 
+  filter(na_count <= 1)
+
+md.pattern(dat_mini_1, rotate.names = TRUE)
+
+
+dat_mini_1[sapply(dat_mini_1, is.numeric)] <- lapply(dat_mini_1[sapply(dat_mini_1, is.numeric)], function(x) ifelse(is.na(x), mean(x, na.rm = TRUE), x))
+
+dat_mini_1_impute <- na.omit(dat_mini_1)
+save(dat_mini_1_impute, file = "dat_imp_final.RData")
 
 
 ```
@@ -187,7 +245,7 @@ From early analysis of sample 1, it appears that the client should target the fo
 ```{r}
 # Boxplots for continuous numerical predictors
 
-(age.box <- ggplot(dat, aes(x = y, y = age, fill = y)) +
+(age.box <- ggplot(dat_mini_1_impute, aes(x = y, y = age, fill = y)) +
   geom_boxplot() +
   labs(title = 'Plot of Age by Response', x = 'Response', y = 'Age') +
   theme_classic()
@@ -212,6 +270,8 @@ We now look at survey respondents' predictions of the USB toaster's price. It tu
   labs(title = 'Plot of Campaign by Response', x = 'Response', y = 'Campaign') +
   theme_classic()
 )
+
+
 ```
 The campaign variable tracks how many contacts were performed on respondents during this particular campaign, including the most recent contact. Looking at the box plot above, it appears that there is not much of a difference between those who responded "yes" and those who responded "no." We likely will be able to leave the campaign variable out of our final analysis.
 
@@ -260,6 +320,25 @@ Looking at the poutcome variable, which indicates previous marketing campaign ou
     geom_bar(position = 'fill', stat = 'count') +
     theme_classic()
 )
+
+####Alternative 
+
+job_y <- table(dat_mini_1_impute$job,
+                  dat_mini_1_impute$y)
+job_y
+
+barplot(job_y,
+        legend.text = TRUE,
+        beside = TRUE,
+        main = "Does Job Matter",
+        xlab = "Job Type",
+        ylab = "Will Buy the product") +
+        ylim = c(0,100)
+
+barplot(t(job_y),
+        legend.text = TRUE,
+        beside = TRUE)
+
 ```
 
 Like in sample 1, sample 2 contains valuable information on job type. Although sample 1 suggested that white collar workers may be more likely to purchase the USB toaster, our larger sample 2 suggests that there may be no significant difference. A category that was not included in sample 1 was entrepreneur/self-employed. This category is included in sample 2, and as seen in the stacked bar chart above, people who responded "yes" are around twice as likely to be entrepreneurs/self-employed than people who responeded "no." The client may find success in focusing on self-employed people for this marketing campaign.
@@ -319,66 +398,3 @@ The contact variable tracks respondents' primary phone. As seen in the bar chart
 Upon analysis of the seasons of interactions with respondents, it appears that those who responded favorably to the USB toaster are more likely to have been contacted during Fal and Winter months. However, the differences are not strikingly large, suggesting that season (and subsequently month) may not be useful in predicting the marketing campaign's success.
 
 # Maybe write up a summary of sample 2 findings here? Or maybe we should save the for the conclusion.
-
-```{r}
-# load(dat_imp_final.Rdata)
-
-```
-
-
-```{r}
-#Model Selection
-mod_1 <- glm(y ~ poutcome+age+job+education+housing+price+campaign+default+balance+contact+pdays+month+day+previous, family = "binomial",na.omit(dat))
-
-
-mod_0 <- glm(y ~ 1 , family=binomial, na.omit(dat))
-
-mod.1 = step(mod_0,
-             scope=list(lower=mod_0, upper=mod_1),
-             direction = "both", trace = T)
-library(faraway)
-sumary(mod.1)
-anova(mod.1)
-
-
-```
-
-#Distributions of Variables
-```{r}
-
-###Missing Data
-
-dat_mini_1 <- dplyr::select(dat,y,price,contact,month,education,balance,job,housing,default,age,campaign,poutcome)
-
-#Missing Data Patterns 
-md.pattern(dat_mini_1,plot = T, rotate.names = TRUE)
-
-
-#More Missing Data Patterns
-library(VIM)
-Practicum = aggr(dat_mini_1, numbers=TRUE, sortVars=TRUE,combined = F, labels=names(dat_mini_1), cex.axis=.6, gap=0, ylab=c("Proportion of missingness","Missingness Pattern"),bar = FALSE)
-
-
-```
-
-```{r}
-library(mice)
-md.pattern(dat_mini_1, rotate.names = TRUE)
-
-dat_mini_1$na_count <- apply(dat_mini_1, 1, function(x) sum(is.na(x)))
-dat_mini_1 %>% count(na_count)
-
-dat_mini_1 <- 
-  dat_mini_1 %>% 
-  filter(na_count <= 1)
-
-md.pattern(dat_mini_1, rotate.names = TRUE)
-
-
-dat_mini_1[sapply(dat_mini_1, is.numeric)] <- lapply(dat_mini_1[sapply(dat_mini_1, is.numeric)], function(x) ifelse(is.na(x), mean(x, na.rm = TRUE), x))
-
-dat_mini_1_impute <- na.omit(dat_mini_1)
-save(dat_mini_1_impute, file = "dat_imp_final.RData")
-
-
-```
