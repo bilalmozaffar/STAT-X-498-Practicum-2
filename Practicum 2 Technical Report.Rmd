@@ -199,37 +199,40 @@ fake.dat$education.y <- c(rep('Yes', 197), rep('No', 153),
 In sample 1, the mean age of people who responded favorably toward the product is 25.5, while the mean age of people who did not respond favorable is 37.5. This suggests that younger age drives success of the product in sample 1. (We need to compare this to the sample 2 boxplot, which actually suggests that age is *not* that important in determining success.)
 
 ```{r}
-ggplot(fake.dat, aes(x = gender.y, fill = gender)) +
+plot1 = ggplot(fake.dat, aes(x = gender.y, fill = gender)) +
     geom_bar(position = 'fill', stat = 'count') +
-    labs(title = 'Sample 1 Plot of Gender by Response', x = 'Response', y = 'Proportion') +
+    labs( x = 'Response', y = 'Proportion') +
     theme_classic()
+    
+# ggsave("education_rel_1.jpeg", width = 22, height = 7, dpi = 300)
+
 ```
 
 In sample 1, 76% of respondents were male (around 322 of 421). Of the people who responded favorably toward the product, 82% were male, while only 71% of people who responded negatively toward the product were male. This suggests 
 that males are slightly more likely to favor the product than females, because males are slightly overrepresented in the "yes" response category and slightly underrepresented in the "no" response category.
 
 ```{r}
-ggplot(fake.dat, aes(x = race.y, fill = race)) +
+plot2 = ggplot(fake.dat, aes(x = race.y, fill = race)) +
     geom_bar(position = 'fill', stat = 'count') +
-    labs(title = 'Sample 1 Plot of Race by Response', x = 'Response', y = 'Proportion') +
+    labs( x = 'Response', y = 'Proportion') +
     theme_classic()
 ```
 
 Of all the sample 1 respondents, 86% were white (around 360 of 421). Of the people who responded favorably toward the product, 89% were white, and of those who did not respond favorably, 82% were white. White people are slightly overrepresented in the "yes" response category and slightly underrepresented in the "no" category, relative to their presence in the sample as a whole.
 
 ```{r}
-ggplot(fake.dat, aes(x = marital.y, fill = marital)) +
+plot3 = ggplot(fake.dat, aes(x = marital.y, fill = marital)) +
     geom_bar(position = 'fill', stat = 'count') +
-    labs(title = 'Sample 1 Plot of Marital Status by Response', x = 'Response', y = 'Proportion') +
+    labs( x = 'Response', y = 'Proportion') +
     theme_classic()
 ```
 
 In sample 1, only 14% of respondents were married (around 58 of 421). Of the people who responded favorably toward the product, just 1.0% were married, while 27% of the people who did not respond favorably were married. This indicates that married people are underrepresented in the "yes" response group and overrepresented in the "no" response group.
 
 ```{r}
-ggplot(fake.dat, aes(x = job.y, fill = job)) +
+plot4 = ggplot(fake.dat, aes(x = job.y, fill = job)) +
     geom_bar(position = 'fill', stat = 'count') +
-    labs(title = 'Sample 1 Plot of Job Type by Response', x = 'Response', y = 'Proportion') +
+    labs( x = 'Response', y = 'Proportion') +
     theme_classic()
 ```
 
@@ -238,15 +241,30 @@ There are a few key findings from the job categories in sample 1. For instance, 
 On the contrary, people who work in houses are largely underrepresented in the "yes" group. Of all the sample 1 respondents, 15% work in houses (around 62 of 421). However, only 1% of people who responded "yes" owned a house, while a staggering 29% of people who responded "no" owned a house.
 
 ```{r}
-ggplot(fake.dat, aes(x = education.y, fill = education)) +
+plot5 = ggplot(fake.dat, aes(x = education.y, fill = education)) +
     geom_bar(position = 'fill', stat = 'count') +
-    labs(title = 'Sample 1 Plot of Education Status by Response', x = 'Response', y = 'Proportion') +
+    labs( x = 'Response', y = 'Proportion') +
     theme_classic()
+plot5
 ```
 
 In regards to education status, there is one key finding from sample 1. Of all respondents, 83% had a college education or more (350 of 421). However, 93% of people who responded favorably toward the product had a college education or more, as opposed to the 83% who did not respond favorably. This suggests that having a college education or more may make one more likely to purchase the product.
 
 From early analysis of sample 1, it appears that the client should target the following groups of people in order to have an optimal campaign: younger people (people in their 20s), males, white people, non-married people, white collar workers, unemployed people, and people with college education or higher. The client should note that people who own houses appear to be very unlikely to purchase the USB toaster. This suggests that a campaign would be best if geared more toward people who rent apartments, rent houses, or live in college dormitories.
+
+
+```{r}
+#put plots together
+library(ggpubr)
+figure_1 <- ggarrange(plot1, plot2, plot3,plot4,plot5,
+                      ncol = 2, nrow = 3,
+                      widths=60,
+                      heights = c(1,1))
+#annotate_figure(figure_1,
+                #top = text_grob("Figure 5:Proportion of Interst in the Product by Demographic Variables In Sample 1", color = "black", face = "bold"))
+ggexport(figure_1, filename = "figure1_fake.jpeg")
+
+```
 
 ## Analyzing Sample 2 and Comparing It to Sample 1
 
@@ -287,9 +305,18 @@ geom_jitter(height = 0.1, width = 0.5) +
 geom_jitter(height = 0.1, width = 0.5) + 
   xlab("Proposed Price for Product") + 
   ylab("Individuals Willing to Buy Product") +
-  ggtitle("Figure 2: Relationship Between Price and Willingness to Purchase Product by Debt")+
+  ggtitle("Figure 4: Relationship Between Price and Willingness to Purchase Product by Debt")+
   labs(color = "Non-Mortgage Loan Balance")
   ggsave("price_rel_1_c.jpeg", width = 10, height = 7, dpi = 300)
+  
+  
+  ggplot(dat_mini_1_impute, aes(x = balance, y = y)) +
+  geom_jitter(height = 0.1, width = 0.5) + 
+  xlab("Non-Mortgage Debt") + 
+  ylab("Individuals Willing to Buy Product") +
+  ggtitle("Figure 4: Relationship Between Price and Willingness to Purchase Product by Non-mortgage Balance")+
+  labs(color = "Non-Mortgage Loan Balance")
+  ggsave("debt_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 We now look at survey respondents' predictions of the USB toaster's price. It turns out that the median suggested price for people who responded favorably toward the product is around $25 higher than that for people who did not respond favorable toward the product. This can be perplexing at first glance, because one might expect for people to respond more favorably to a product if they perceive it to be cheaper. What seems to be happening instead is that people who find the USB toaster to be particularly valuable in price may find it to be a high quality product, and thus these people would be more likely to purchase the product. It is worth noting that this metric is not included in sample 1, so the key finding noted here is further justification of the expense of sample 2.
@@ -356,9 +383,10 @@ ggplot(dat_mini_1_impute, aes(x = factor(poutcome, labels = c("Failure", "Other"
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     scale_y_continuous(labels = scales::percent)+
     xlab("Previous Marketing Campaign Outcome") + 
-    ylab("Percentage of Individuals Willing to Buy Product") 
+    ylab("Percentage of Individuals Willing to Buy Product")+ 
+    ggtitle("Figure 4: Relationship bewteen Interest in the Product and Previous Marketing Outcome")
     
-# ggsave("poutcome_rel_1.jpeg", width = 22, height = 7, dpi = 300)
+ggsave("poutcome_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 Looking at the poutcome variable, which indicates previous marketing campaign outcomes on respondents, the only notable finding is that previous successes are highly indicative of the current marketing campaign's success. The client may be better off focusing on people who have previously suggested support for the product. This is another feature not included in sample 1 that provides justification for the pursuit of a larger sample.
@@ -396,9 +424,10 @@ ggplot(dat_mini_1_impute, aes(x = factor(job, labels = c("White Collar", "Blue C
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     scale_y_continuous(labels = scales::percent)+
     xlab("Job Type") + 
-    ylab("Percentage of Individuals Willing to Buy Product") 
+    ylab("Percentage of Individuals Willing to Buy Product")+
+    ggtitle("Figure 6: The Proportion of Willingness to Buy the Product by Job Type")
     
-ggsave("job_rel_1.jpeg", width = 22, height = 7, dpi = 300)
+ggsave("job_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 
   
 ```
@@ -444,14 +473,14 @@ ggplot(dat_mini_1_impute, aes(x = factor(education, labels = c("Less than Colleg
     geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
     geom_text(aes( label = scales::percent(..prop..),
                    y= ..prop.. ), stat= "count", vjust = -.5) +
-    labs(y = "Percent", fill="Education groups") +
+    labs(y = "Percent", fill="Level of Education") +
     facet_grid(~y) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     scale_y_continuous(labels = scales::percent)+
-    xlab("Education Group") + 
-    ylab("Percentage of Individuals Willing to Buy Product") 
-    
-# ggsave("education_rel_1.jpeg", width = 22, height = 7, dpi = 300)
+    xlab("Level of Education") + 
+    ylab("Percentage of Individuals Willing to Buy Product")+
+    ggtitle("Figure 7: The Proportion of Willingness to Buy the Product by Education")
+    ggsave("education_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 In the sample 1 analysis, we saw that people who responded favorably to the USB toaster were more likely to have a college education or higher. This conclusion is corroborated by sample 2. However, the conclusion is not as resounding here as it was in sample 1.
@@ -484,14 +513,14 @@ ggplot(dat_mini_1_impute, aes(x = factor(housing, labels = c("No", "Yes")),  gro
     geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
     geom_text(aes( label = scales::percent(..prop..),
                    y= ..prop.. ), stat= "count", vjust = -.5) +
-    labs(y = "Percent", fill="Mortgage") +
+    labs(y = "Percent", fill="Home Ownership") +
     facet_grid(~y) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     scale_y_continuous(labels = scales::percent)+
-    xlab("Mortgage") + 
-    ylab("Percentage of Individuals Willing to Buy Product") 
-    
-# ggsave("housing_rel_1.jpeg", width = 22, height = 7, dpi = 300)
+    xlab("Home Ownership") + 
+    ylab("Percentage of Individuals Willing to Buy Product")+
+    ggtitle("Figure 8: The Proportion of Willingness to Buy the Product by Home Ownership")
+    ggsave("housing_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 The housing variable records whether respondents have mortgages or not. The people who responded favorably to the USB toaster are less likely to have mortgages than are those who did not respond favorably, as seen in the stacked bar charts above. Based on this information, it may be useful for the client to target people who have their homes paid off and those who rent their homes.
@@ -529,9 +558,9 @@ ggplot(dat_mini_1_impute, aes(x = factor(default, labels = c("No", "Yes")),  gro
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     scale_y_continuous(labels = scales::percent)+
     xlab("Defaulted Credit") + 
-    ylab("Percentage of Individuals Willing to Buy Product") 
-    
-# ggsave("default_rel_1.jpeg", width = 22, height = 7, dpi = 300)
+    ylab("Percentage of Individuals Willing to Buy Product")+
+     ggtitle("Figure 9: The Proportion of Willingness to Buy the Product by Defaut on Credit")
+    ggsave("default_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 The default variable indicates whether respondents have credit in default. According to the bar plots above, there does not seem to be a significant difference in this regard between those who responded favorably to the product and those who did not. Default will likely not be a useful predictor in our final analysis.
@@ -569,9 +598,9 @@ ggplot(dat_mini_1_impute, aes(x = factor(contact, labels = c("Cellular", "Teleph
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     scale_y_continuous(labels = scales::percent)+
     xlab("Primary Contact Method") + 
-    ylab("Percentage of Individuals Willing to Buy Product") 
-    
-# ggsave("contact_rel_1.jpeg", width = 22, height = 7, dpi = 300)
+    ylab("Percentage of Individuals Willing to Buy Product")+
+    ggtitle("Figure 10: The Proportion of Willingness to Buy the Product by Method of Contact")
+    ggsave("contact_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 The contact variable tracks respondents' primary phone. As seen in the bar charts above, people who responded favorably to the USB toaster are more likely to use cellular phones as their primary phones. This would follow logically to the conclusions about age made during the sample 1 analysis, as younger people are more likely to have cellular phones as their primary phones. If the client is to rely on phone calls for this campaign, it may be best to take part in phone banking focused on registered cellular phone numbers.
@@ -581,6 +610,19 @@ The contact variable tracks respondents' primary phone. As seen in the bar chart
     geom_bar(position = 'fill', stat = 'count') +
     theme_classic()
 )
+
+ggplot(dat_mini_1_impute, aes(x = month_season,  group=y)) + 
+    geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+    geom_text(aes( label = scales::percent(..prop..),
+                   y= ..prop.. ), stat= "count", vjust = -.5) +
+    labs(y = "Percent", fill=" Month/Season of Contact") +
+    facet_grid(~y) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    scale_y_continuous(labels = scales::percent)+
+    xlab("Month/Season of Contact") + 
+    ylab("Percentage of Individuals Willing to Buy Product")+
+    ggtitle("Figure 11: The Proportion of Willingness to Buy the Product by the Month/Season of Contact")
+    ggsave("month_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 Upon analysis of the seasons of interactions with respondents, it appears that those who responded favorably to the USB toaster are more likely to have been contacted during Fal and Winter months. However, the differences are not strikingly large, suggesting that season (and subsequently month) may not be useful in predicting the marketing campaign's success.
