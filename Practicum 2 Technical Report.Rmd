@@ -425,7 +425,7 @@ ggplot(dat_mini_1_impute, aes(x = factor(job, labels = c("White Collar", "Blue C
     scale_y_continuous(labels = scales::percent)+
     xlab("Job Type") + 
     ylab("Percentage of Individuals Willing to Buy Product")+
-    ggtitle("Figure 6: The Proportion of Willingness to Buy the Product by Job Type")
+    ggtitle("Figure 5: The Proportion of Willingness to Buy the Product by Job Type")
     
 ggsave("job_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 
@@ -479,7 +479,7 @@ ggplot(dat_mini_1_impute, aes(x = factor(education, labels = c("Less than Colleg
     scale_y_continuous(labels = scales::percent)+
     xlab("Level of Education") + 
     ylab("Percentage of Individuals Willing to Buy Product")+
-    ggtitle("Figure 7: The Proportion of Willingness to Buy the Product by Education")
+    ggtitle("Figure 6: The Proportion of Willingness to Buy the Product by Education")
     ggsave("education_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
@@ -519,7 +519,7 @@ ggplot(dat_mini_1_impute, aes(x = factor(housing, labels = c("No", "Yes")),  gro
     scale_y_continuous(labels = scales::percent)+
     xlab("Home Ownership") + 
     ylab("Percentage of Individuals Willing to Buy Product")+
-    ggtitle("Figure 8: The Proportion of Willingness to Buy the Product by Home Ownership")
+    ggtitle("Figure 7: The Proportion of Willingness to Buy the Product by Home Ownership")
     ggsave("housing_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
@@ -559,7 +559,7 @@ ggplot(dat_mini_1_impute, aes(x = factor(default, labels = c("No", "Yes")),  gro
     scale_y_continuous(labels = scales::percent)+
     xlab("Defaulted Credit") + 
     ylab("Percentage of Individuals Willing to Buy Product")+
-     ggtitle("Figure 9: The Proportion of Willingness to Buy the Product by Defaut on Credit")
+     ggtitle("Figure 8: The Proportion of Willingness to Buy the Product by Defaut on Credit")
     ggsave("default_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
@@ -599,7 +599,7 @@ ggplot(dat_mini_1_impute, aes(x = factor(contact, labels = c("Cellular", "Teleph
     scale_y_continuous(labels = scales::percent)+
     xlab("Primary Contact Method") + 
     ylab("Percentage of Individuals Willing to Buy Product")+
-    ggtitle("Figure 10: The Proportion of Willingness to Buy the Product by Method of Contact")
+    ggtitle("Figure 9: The Proportion of Willingness to Buy the Product by Method of Contact")
     ggsave("contact_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
@@ -621,7 +621,7 @@ ggplot(dat_mini_1_impute, aes(x = month_season,  group=y)) +
     scale_y_continuous(labels = scales::percent)+
     xlab("Month/Season of Contact") + 
     ylab("Percentage of Individuals Willing to Buy Product")+
-    ggtitle("Figure 11: The Proportion of Willingness to Buy the Product by the Month/Season of Contact")
+    ggtitle("Figure 10: The Proportion of Willingness to Buy the Product by the Month/Season of Contact")
     ggsave("month_rel_1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
