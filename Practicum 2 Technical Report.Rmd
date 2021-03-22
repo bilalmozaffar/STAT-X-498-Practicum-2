@@ -654,13 +654,24 @@ Upon analysis of the seasons of interactions with respondents, it appears that t
 
 ```{r}
 ###Models##
+
 pre_imp <- glm(y ~ price+contact+month_season+education+balance+job+housing+default+age+campaign+poutcome,family = "binomial",na.omit(dat))
 
 post_imp <- glm(y ~ price+contact+month_season+education+balance+job+housing+default+age+campaign+poutcome,family = "binomial",dat_mini_1_impute)
 library(faraway)
 sumary(pre_imp)
+beta_pre <- coefficients(pre_imp)
+odds_pre = exp(beta_pre)
+odds_pre
+
 sumary(post_imp)
 library(dispmod)
+
+
+###test for transformations
+library(car)
+t1 = powerTransform(post_imp)
+summary(t1)
 
 sigma2 <- sum(residuals(post_imp,type="pearson")^2)/(36131-31)
 sigma2
@@ -673,5 +684,7 @@ halfnorm(cooks.distance(post_imp))
 
 plot(predict(post_imp),residuals(post_imp,type="pearson"),
 xlab="Linear Predictor", ylab="Pearson Residuals")
-
+beta <- coefficients(post_imp)
+odds = exp(beta)
+odds
 ```
