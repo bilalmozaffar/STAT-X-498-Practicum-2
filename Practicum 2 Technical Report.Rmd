@@ -204,7 +204,7 @@ plot1 = ggplot(fake.dat, aes(x = gender.y, fill = gender)) +
     labs( x = 'Response', y = 'Proportion') +
     theme_classic()
     
-# ggsave("education_rel_1.jpeg", width = 22, height = 7, dpi = 300)
+ggsave("gender_rel_1_samp1.jpeg", width = 10, height = 7, dpi = 300)
 
 ```
 
@@ -216,6 +216,8 @@ plot2 = ggplot(fake.dat, aes(x = race.y, fill = race)) +
     geom_bar(position = 'fill', stat = 'count') +
     labs( x = 'Response', y = 'Proportion') +
     theme_classic()
+
+ggsave("race_rel_1_samp1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 Of all the sample 1 respondents, 86% were white (around 360 of 421). Of the people who responded favorably toward the product, 89% were white, and of those who did not respond favorably, 82% were white. White people are slightly overrepresented in the "yes" response category and slightly underrepresented in the "no" category, relative to their presence in the sample as a whole.
@@ -225,6 +227,7 @@ plot3 = ggplot(fake.dat, aes(x = marital.y, fill = marital)) +
     geom_bar(position = 'fill', stat = 'count') +
     labs( x = 'Response', y = 'Proportion') +
     theme_classic()
+ggsave("marital_rel_1_samp1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 In sample 1, only 14% of respondents were married (around 58 of 421). Of the people who responded favorably toward the product, just 1.0% were married, while 27% of the people who did not respond favorably were married. This indicates that married people are underrepresented in the "yes" response group and overrepresented in the "no" response group.
@@ -234,6 +237,7 @@ plot4 = ggplot(fake.dat, aes(x = job.y, fill = job)) +
     geom_bar(position = 'fill', stat = 'count') +
     labs( x = 'Response', y = 'Proportion') +
     theme_classic()
+ggsave("job_rel_1_samp1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 There are a few key findings from the job categories in sample 1. For instance, although only 13% of the respondents were white collar workers (around 55 of 421), 20% of people who responded "yes" were white collar workers, while only 5.9% of people who responded "no" were white collar workers. This suggests that white collar workers may be more likely to purchase the product than people of other job groups. The same can be said for unemployed people/unknown job status. Of all the respondents, only 4.7% were unemployed/unknown (around 20 of 421), yet 9.0% of people who responded "yes" were unemployed/unknown, and only 0.3% of people who responded "no" were unemployed/unknown. Clearly, unemployed/unknown people are largely overrepresented in the "yes" group and underrepresented in the "no" group.
@@ -245,7 +249,7 @@ plot5 = ggplot(fake.dat, aes(x = education.y, fill = education)) +
     geom_bar(position = 'fill', stat = 'count') +
     labs( x = 'Response', y = 'Proportion') +
     theme_classic()
-plot5
+ggsave("education_rel_1_samp1.jpeg", width = 10, height = 7, dpi = 300)
 ```
 
 In regards to education status, there is one key finding from sample 1. Of all respondents, 83% had a college education or more (350 of 421). However, 93% of people who responded favorably toward the product had a college education or more, as opposed to the 83% who did not respond favorably. This suggests that having a college education or more may make one more likely to purchase the product.
